@@ -1,4 +1,4 @@
-const {propagation, trace} = require('@opentelemetry/api');
+const api = require('@opentelemetry/api');
 const {registerInstrumentations} = require('@opentelemetry/instrumentation');
 const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node');
 const {Resource} = require('@opentelemetry/resources');
@@ -8,14 +8,20 @@ const {JaegerExporter} = require('@opentelemetry/exporter-jaeger');
 const {ZipkinExporter} = require('@opentelemetry/exporter-zipkin');
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http');
 const {Propagator} = require('./propagator');
+const {propagation, trace} = api;
 
 class JambonzTracer {
 
   constructor(traceOptions) {
     this.traceOptions = traceOptions;
+    this._tracer = this.buildTracer();
   }
 
   get tracer() {
+    return this._tracer;
+  }
+
+  buildTracer() {
     const {serviceName, enabled, version, jaegerHost, jaegerEndpoint, zipkinUrl, collectorUrl} = this.traceOptions;
     if (enabled) {
       const provider = new NodeTracerProvider({
@@ -63,6 +69,6 @@ class JambonzTracer {
 }
 
 module.exports = {
-  JambonzTracer,
+  JambonzTracer
 };
 
