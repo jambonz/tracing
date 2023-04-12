@@ -1,5 +1,6 @@
 export interface TraceOptions {
   serviceName: string;
+  version: string;
   enabled: boolean;
   jaegerHost?: string;
   jaegerEndpoint?: string;

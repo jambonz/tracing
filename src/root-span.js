@@ -2,16 +2,38 @@ const {trace, context, SpanKind, propagation} = require('@opentelemetry/api');
 
 class RootSpan {
 
-  constructor(callType, attributes, req) {
+  constructor(callType, req) {
     const tracer = req.srf.locals.otel.tracer;
     const ctx = propagation.extract(context.active(), req);
     this._span = tracer.startSpan(callType, {
       kind: SpanKind.CONSUMER,
-      attributes: attributes,
+      attributes: this.getSpanAttributes(req),
       root: false,
     }, ctx);
     this._ctx = trace.setSpan(ctx, this._span);
     this.tracer = tracer;
+  }
+
+  getSpanAttributes(req) {
+    const {sip, callSid, linkedSpanId} = req;
+    if (callSid) {
+      const {callId} = sip;
+      return {
+        linkedSpanId,
+        callId,
+        callSid,
+      };
+    } else {
+      const {locals} = req;
+      const {callSid} = req.locals;
+      return {
+        callSid,
+        accountSid: req.get('X-Account-Sid'),
+        applicationSid: locals.application_sid,
+        callId: req.get('Call-ID'),
+        externalCallId: req.get('X-CID'),
+      };
+    }
   }
 
   get context() {
@@ -42,9 +64,7 @@ class RootSpan {
   }
 
   end() {
-    if (!this._span.ended) {
-      this._span.end();
-    }
+    this._span.end();
   }
 
   startChildSpan(name, attributes) {

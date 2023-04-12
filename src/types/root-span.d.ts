@@ -7,7 +7,7 @@ export declare class RootSpan {
   private _ctx: Context
   private tracer: Tracer
 
-  constructor(callType: string, attributes: any, req: any);
+  constructor(callType: string, req: any, attributes: any);
 
   context(): Context;
 

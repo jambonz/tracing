@@ -47,3 +47,5 @@ create_db.sql
 
 test/postgres-data
 db/remove-account.sh
+
+/lib
