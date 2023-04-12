@@ -7,7 +7,7 @@ const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base');
 const {JaegerExporter} = require('@opentelemetry/exporter-jaeger');
 const {ZipkinExporter} = require('@opentelemetry/exporter-zipkin');
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http');
-const {Propagator} = require('./types/propagator');
+const {Propagator} = require('./propagator');
 
 class JambonzTracer {
 
