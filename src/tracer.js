@@ -88,7 +88,7 @@ class JambonzTracer {
       });
     }
 
-    return trace.getTracer(serviceName);
+    return trace.getTracer(name);
   }
 
   get name() {
