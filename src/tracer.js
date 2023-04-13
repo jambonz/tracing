@@ -13,8 +13,8 @@ const {propagation, trace, diag, DiagConsoleLogger, DiagLogLevel} = api;
 class JambonzTracer {
 
   constructor(traceOptions) {
-    this._tracer = this.buildTracer();
     this._traceOptions = traceOptions;
+    this._tracer = this.buildTracer();
   }
 
   get tracer() {
