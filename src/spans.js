@@ -10,11 +10,11 @@ const noopLogger = {
 
 class RootSpan {
 
-  constructor(name, attributes, tracer, logger) {
+  constructor(name, traceId, attributes, tracer, logger) {
     this.logger = logger || noopLogger;
     this.name = name;
     this.tracer = tracer;
-    const ctx = propagation.extract(context.active(), attributes);
+    const ctx = propagation.extract(context.active(), {traceId});
     this._span = this.tracer.startSpan(name, {
       attributes,
       kind: SpanKind.CONSUMER,
