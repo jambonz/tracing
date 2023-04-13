@@ -1,5 +1,5 @@
 const api = require('@opentelemetry/api');
-const {registerInstrumentations} = require('@opentelemetry/instrumentation');
+// const {registerInstrumentations} = require('@opentelemetry/instrumentation');
 const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node');
 const {Resource} = require('@opentelemetry/resources');
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions');
@@ -76,13 +76,13 @@ class JambonzTracer {
       provider.register({
         propagator: new Propagator(),
       });
-      registerInstrumentations({
-        instrumentations: [
-          //new HttpInstrumentation(),
-          //new ExpressInstrumentation(),
-          //new PinoInstrumentation()
-        ],
-      });
+      // registerInstrumentations({
+      //   instrumentations: [
+      //     //new HttpInstrumentation(),
+      //     //new ExpressInstrumentation(),
+      //     //new PinoInstrumentation()
+      //   ],
+      // });
     }
 
     return trace.getTracer(name);
