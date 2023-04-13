@@ -3,14 +3,14 @@ const {SpanStatusCode} = require('@opentelemetry/api/build/src/trace/status');
 
 class RootSpan {
 
-  constructor(callType, req, logger) {
+  constructor(callType, attributes, tracer, logger) {
     this.logger = logger;
     this.name = callType;
-    this.tracer = req.srf.locals.otel.tracer;
-    const ctx = propagation.extract(context.active(), req);
+    this.tracer = tracer;
+    const ctx = propagation.extract(context.active(), attributes);
     this._span = this.tracer.startSpan(callType, {
+      attributes,
       kind: SpanKind.CONSUMER,
-      attributes: this.getSpanAttributes(req),
       root: false,
     }, ctx);
     this._ctx = trace.setSpan(ctx, this._span);

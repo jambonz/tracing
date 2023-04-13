@@ -15,11 +15,11 @@ class Propagator {
   }
 
   extract(context, carrier) {
-    const callSid = this.getCallSidFromCarrier(carrier);
-    if (!callSid) {
+    let { traceId } = carrier;
+    if (!traceId) {
       return context;
     }
-    const traceId = this.getHexValue(callSid);
+    traceId = this.getHexValue(traceId);
     const spanId = traceId.substring(0, 16);
     if (!isValidTraceId(traceId) || !isValidSpanId(spanId)) {
       return context;
@@ -34,16 +34,6 @@ class Propagator {
 
   fields() {
     return ['traceId', 'spanId'];
-  }
-
-  getCallSidFromCarrier(carrier) {
-    const {callSid, locals} = carrier;
-    if (callSid) {
-      return callSid;
-    } else if (locals) {
-      return locals.callSid;
-    }
-    return null;
   }
 
   getHexValue(callSid) {

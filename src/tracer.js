@@ -13,8 +13,8 @@ const {propagation, trace, diag, DiagConsoleLogger, DiagLogLevel} = api;
 class JambonzTracer {
 
   constructor(traceOptions) {
-    this.traceOptions = traceOptions;
     this._tracer = this.buildTracer();
+    this._traceOptions = traceOptions;
   }
 
   get tracer() {
@@ -31,7 +31,7 @@ class JambonzTracer {
       zipkinUrl,
       collectorUrl,
       logLevel,
-    } = this.traceOptions;
+    } = this._traceOptions;
     if (enabled) {
       const provider = new NodeTracerProvider({
         resource: new Resource({
@@ -51,10 +51,19 @@ class JambonzTracer {
         });
       }
 
-      if (logLevel === 'debug') {
-        diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
-      } else if (logLevel === 'trace') {
-        diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.VERBOSE);
+      const logger = new DiagConsoleLogger();
+      switch (logLevel || 'warn') {
+        case 'info':
+          diag.setLogger(logger, DiagLogLevel.INFO);
+          break;
+        case 'debug':
+          diag.setLogger(logger, DiagLogLevel.DEBUG);
+          break;
+        case 'trace':
+          diag.setLogger(logger, DiagLogLevel.VERBOSE);
+          break;
+        default:
+          diag.setLogger(logger, DiagLogLevel.WARN);
       }
 
       provider.addSpanProcessor(new BatchSpanProcessor(exporter, {
@@ -80,6 +89,14 @@ class JambonzTracer {
     }
 
     return trace.getTracer(serviceName);
+  }
+
+  get name() {
+    return this._traceOptions.serviceName;
+  }
+
+  get enabled() {
+    return this._traceOptions.enabled;
   }
 }
 
