@@ -79,7 +79,7 @@ class RootSpan {
     this.logger.debug({name, attributes}, 'starting child span of rootSpan');
     const span = this.tracer.startSpan(name, attributes, this._ctx);
     const ctx = trace.setSpan(this._ctx, span);
-    return new ChildSpan(name, span, ctx, this.tracer);
+    return new ChildSpan(name, span, ctx, this.logger, this.tracer);
   }
 }
 
