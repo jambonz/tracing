@@ -8,7 +8,7 @@ const {JaegerExporter} = require('@opentelemetry/exporter-jaeger');
 const {ZipkinExporter} = require('@opentelemetry/exporter-zipkin');
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http');
 const {Propagator} = require('./propagator');
-const {propagation, trace} = api;
+const {propagation, trace, diag, DiagConsoleLogger, DiagLogLevel} = api;
 
 class JambonzTracer {
 
@@ -22,7 +22,16 @@ class JambonzTracer {
   }
 
   buildTracer() {
-    const {serviceName, enabled, version, jaegerHost, jaegerEndpoint, zipkinUrl, collectorUrl} = this.traceOptions;
+    const {
+      serviceName,
+      enabled,
+      version,
+      jaegerHost,
+      jaegerEndpoint,
+      zipkinUrl,
+      collectorUrl,
+      logLevel,
+    } = this.traceOptions;
     if (enabled) {
       const provider = new NodeTracerProvider({
         resource: new Resource({
@@ -40,6 +49,12 @@ class JambonzTracer {
         exporter = new OTLPTraceExporter({
           url: collectorUrl,
         });
+      }
+
+      if (logLevel === 'debug') {
+        diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+      } else if (logLevel === 'trace') {
+        diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.VERBOSE);
       }
 
       provider.addSpanProcessor(new BatchSpanProcessor(exporter, {
@@ -69,6 +84,6 @@ class JambonzTracer {
 }
 
 module.exports = {
-  JambonzTracer
+  JambonzTracer,
 };
 
