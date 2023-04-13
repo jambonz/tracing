@@ -23,7 +23,7 @@ class JambonzTracer {
 
   buildTracer() {
     const {
-      serviceName,
+      name,
       enabled,
       version,
       jaegerHost,
@@ -35,7 +35,7 @@ class JambonzTracer {
     if (enabled) {
       const provider = new NodeTracerProvider({
         resource: new Resource({
-          [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
+          [SemanticResourceAttributes.SERVICE_NAME]: name,
           [SemanticResourceAttributes.SERVICE_VERSION]: version,
         }),
       });

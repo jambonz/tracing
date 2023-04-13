@@ -20,15 +20,15 @@ Create a new JambonzTracer instance
 
 Configuration is provided via environment variables:
 
-| variable              | meaning                                      | required? |
-|-----------------------|----------------------------------------------|-----------|
-| enabled               | enable otel tracing                          | no        |
-| version               | app version, usually taken from package.json | yes       |
-| serviceName           | name of otel service                         | yes       |
-| jaegerEndpoint        | url for JaegerExporter                       | no        |
-| zipkinEndpoint        | url for ZipkinExporter                       | no        |
-| collectorEndpoint     | url for OTLPTraceExporter                    | no        |
-| logLevel              | warn,info,debug or trace                     | no        |
+| variable           | meaning                                      | required? |
+|--------------------|----------------------------------------------|-----------|
+| enabled            | enable otel tracing                          | no        |
+| version            | app version, usually taken from package.json | yes       |
+| name               | name of otel service                         | yes       |
+| jaegerEndpoint     | url for JaegerExporter                       | no        |
+| zipkinEndpoint     | url for ZipkinExporter                       | no        |
+| collectorEndpoint  | url for OTLPTraceExporter                    | no        |
+| logLevel           | warn,info,debug or trace                     | no        |
 
 Create a RootSpan
 
