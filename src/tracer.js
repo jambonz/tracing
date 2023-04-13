@@ -8,17 +8,13 @@ const {JaegerExporter} = require('@opentelemetry/exporter-jaeger');
 const {ZipkinExporter} = require('@opentelemetry/exporter-zipkin');
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http');
 const {Propagator} = require('./propagator');
-const {propagation, trace, diag, DiagConsoleLogger, DiagLogLevel} = api;
+const {trace, diag, DiagConsoleLogger, DiagLogLevel} = api;
 
 class JambonzTracer {
 
   constructor(traceOptions) {
     this._traceOptions = traceOptions;
     this._tracer = this.buildTracer();
-  }
-
-  get tracer() {
-    return this._tracer;
   }
 
   buildTracer() {
@@ -39,7 +35,6 @@ class JambonzTracer {
           [SemanticResourceAttributes.SERVICE_VERSION]: version,
         }),
       });
-      propagation.setGlobalPropagator(new Propagator());
       let exporter;
       if (jaegerHost || jaegerEndpoint) {
         exporter = new JaegerExporter();
@@ -78,7 +73,9 @@ class JambonzTracer {
       }));
 
       // Initialize the OpenTelemetry APIs to use the NodeTracerProvider bindings
-      provider.register();
+      provider.register({
+        propagator: new Propagator(),
+      });
       registerInstrumentations({
         instrumentations: [
           //new HttpInstrumentation(),
@@ -89,6 +86,10 @@ class JambonzTracer {
     }
 
     return trace.getTracer(name);
+  }
+
+  get tracer() {
+    return this._tracer;
   }
 
   get name() {
