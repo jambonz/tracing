@@ -116,8 +116,9 @@ class ChildSpan {
     }
   }
 
-  setAttributes(attrs) {
-    this._span.setAttributes(attrs);
+  setAttributes(attributes) {
+    this.logger.debug({attributes}, `setting attributes for span: ${this.name}`);
+    this._span.setAttributes(attributes);
   }
 
   end() {
@@ -141,7 +142,7 @@ class ChildSpan {
     this.logger.debug({name, attributes}, 'starting child span');
     const span = this.tracer.startSpan(name, attributes || {}, this._ctx);
     const ctx = trace.setSpan(this._ctx, span);
-    return new ChildSpan(name, span, ctx, this.tracer);
+    return new ChildSpan(name, span, ctx, this.logger, this.tracer);
   }
 
 }
