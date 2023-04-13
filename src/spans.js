@@ -1,10 +1,17 @@
 const {trace, context, SpanKind, propagation} = require('@opentelemetry/api');
 const {SpanStatusCode} = require('@opentelemetry/api/build/src/trace/status');
 
+const noopLogger = {
+  error: () => {},
+  info: () => {},
+  debug: () => {},
+  child: () => this
+};
+
 class RootSpan {
 
   constructor(callType, attributes, tracer, logger) {
-    this.logger = logger;
+    this.logger = logger || noopLogger;
     this.name = callType;
     this.tracer = tracer;
     const ctx = propagation.extract(context.active(), attributes);
@@ -14,28 +21,6 @@ class RootSpan {
       root: false,
     }, ctx);
     this._ctx = trace.setSpan(ctx, this._span);
-  }
-
-  getSpanAttributes(req) {
-    const {sip, callSid, linkedSpanId} = req;
-    if (callSid) {
-      const {callId} = sip;
-      return {
-        linkedSpanId,
-        callId,
-        callSid,
-      };
-    } else {
-      const {locals} = req;
-      const {callSid} = req.locals;
-      return {
-        callSid,
-        accountSid: req.get('X-Account-Sid'),
-        applicationSid: locals.application_sid,
-        callId: req.get('Call-ID'),
-        externalCallId: req.get('X-CID'),
-      };
-    }
   }
 
   get context() {

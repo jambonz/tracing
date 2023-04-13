@@ -10,7 +10,7 @@ Create a new JambonzTracer instance
  const {tracer} = new JambonzTracer({
   enabled: true,
   version: "1.0.0",
-  serviceName: 'jambonz-feature-server',
+  serviceName: 'my-jambonz-app',
   jaegerEndpoint: 'http://127.0.0.0:14268/api/traces',
   logLevel: 'info'
 });
@@ -41,6 +41,7 @@ Create a RootSpan
 | name       | name of current span                                                                                                                          | yes       |
 | traceId    | A valid trace identifier is a 16-byte array with at least one non-zero byte. Or a UUID v4 equivalent. Leave null to generate new root traceId | no        |
 | attributes | map of attributes to assign to span                                                                                                           | no        |
+| tracer     | the tracer instance                                                                                                                           | yes       |
 | logger     | logger                                                                                                                                        | no        |
 
 Create and nest ChildSpan's
