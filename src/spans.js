@@ -2,10 +2,13 @@ const {trace, context, SpanKind, propagation} = require('@opentelemetry/api');
 const {SpanStatusCode} = require('@opentelemetry/api/build/src/trace/status');
 
 const noopLogger = {
-  error: () => {},
-  info: () => {},
-  debug: () => {},
-  child: () => this
+  error: () => {
+  },
+  info: () => {
+  },
+  debug: () => {
+  },
+  child: () => this,
 };
 
 class RootSpan {
@@ -55,6 +58,16 @@ class RootSpan {
     if (this._span && this.traceId !== '00000000000000000000000000000000') {
       return `${this.traceId}-${this.spanId}-1`;
     }
+  }
+
+  getSIPTracingPropagationHeaders() {
+    if (this._span && this.traceId !== '00000000000000000000000000000000') {
+      return {
+        'X-Trace-ID': this.traceId,
+        'X-Span-ID': this.spanId,
+      };
+    }
+    return {};
   }
 
   setAttributes(attributes) {
@@ -129,7 +142,7 @@ class ChildSpan {
   endWithError(message) {
     this._span.setStatus({
       code: SpanStatusCode.ERROR,
-      message
+      message,
     });
     this.end();
   }
@@ -145,5 +158,5 @@ class ChildSpan {
 
 module.exports = {
   RootSpan,
-  ChildSpan
+  ChildSpan,
 };
