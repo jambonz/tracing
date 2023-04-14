@@ -10,7 +10,7 @@ Create a new JambonzTracer instance
  const {tracer} = new JambonzTracer({
   enabled: true,
   version: "1.0.0",
-  serviceName: 'my-jambonz-app',
+  name: 'my-jambonz-app',
   jaegerEndpoint: 'http://127.0.0.0:14268/api/traces',
   logLevel: 'info'
 });
