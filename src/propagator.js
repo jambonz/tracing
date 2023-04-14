@@ -15,12 +15,12 @@ class Propagator {
   }
 
   extract(context, carrier) {
-    let { traceId } = carrier;
+    let {traceId, spanId} = carrier;
     if (!traceId) {
       return context;
     }
     traceId = this.getHexValue(traceId);
-    const spanId = traceId.substring(0, 16);
+    spanId = spanId || traceId.substring(0, 16);
     if (!isValidTraceId(traceId) || !isValidSpanId(spanId)) {
       return context;
     }

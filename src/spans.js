@@ -10,17 +10,28 @@ const noopLogger = {
 
 class RootSpan {
 
-  constructor(name, traceId, attributes, tracer, logger) {
+  constructor(name, traceId, spanId, attributes, tracer, logger) {
     this.logger = logger || noopLogger;
     this.name = name;
     this.tracer = tracer;
-    const ctx = propagation.extract(context.active(), {traceId});
+    const ctx = propagation.extract(context.active(), {traceId, spanId});
     this._span = this.tracer.startSpan(name, {
       attributes,
       kind: SpanKind.CONSUMER,
       root: false,
     }, ctx);
     this._ctx = trace.setSpan(ctx, this._span);
+  }
+
+  static createFromSIPCallId(name, req, attributes, tracer, logger) {
+    const traceId = req.get('X-CID');
+    return new RootSpan(name, traceId, traceId.replaceAll('-', '').substring(0, 16), attributes, tracer, logger);
+  }
+
+  static createFromSIPHeaders(name, req, attributes, tracer, logger) {
+    const traceId = req.get('X-Trace-ID');
+    const spanId = req.get('X-Span-ID');
+    return new RootSpan(name, traceId, spanId, attributes, tracer, logger);
   }
 
   get context() {

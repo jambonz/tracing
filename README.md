@@ -33,13 +33,16 @@ Configuration is provided via environment variables:
 Create a RootSpan
 
 ```javascript
-   const rootSpan = new RootSpan('incoming-call', traceId, {'callerName': 'smithy'}, logger);
+   const rootSpan = new RootSpan('incoming-call', traceId, spanId, {'callerName': 'smithy'}, tracer, logger);
+   //or 
+   const rootSpan = RootSpan.createFromSIPHeaders('incoming-call', sipRequest, tracer, logger);
 ```
 
 | variable   | meaning                                                                                                                                       | required? |
 |------------|-----------------------------------------------------------------------------------------------------------------------------------------------|-----------|
 | name       | name of current span                                                                                                                          | yes       |
 | traceId    | A valid trace identifier is a 16-byte array with at least one non-zero byte. Or a UUID v4 equivalent. Leave null to generate new root traceId | no        |
+| spanId     | A valid trace identifier is a 8-byte array with at least one non-zero byte                                                                    | no        |
 | attributes | map of attributes to assign to span                                                                                                           | no        |
 | tracer     | the tracer instance                                                                                                                           | yes       |
 | logger     | logger                                                                                                                                        | no        |
