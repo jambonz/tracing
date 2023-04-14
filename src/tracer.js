@@ -1,5 +1,4 @@
 const api = require('@opentelemetry/api');
-// const {registerInstrumentations} = require('@opentelemetry/instrumentation');
 const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node');
 const {Resource} = require('@opentelemetry/resources');
 const {SemanticResourceAttributes} = require('@opentelemetry/semantic-conventions');
@@ -8,10 +7,25 @@ const {JaegerExporter} = require('@opentelemetry/exporter-jaeger');
 const {ZipkinExporter} = require('@opentelemetry/exporter-zipkin');
 const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-http');
 const {Propagator} = require('./propagator');
-const {trace, diag, DiagConsoleLogger, DiagLogLevel} = api;
+// eslint-disable-next-line no-unused-vars
+const {trace, diag, DiagConsoleLogger, DiagLogLevel, TracerAPI} = api;
 
 class JambonzTracer {
 
+  /**
+   * Creates a new JambonzTracer.
+   *
+   * @param {Object} traceOptions - The configuration object
+   * @param {string} traceOptions.name - The name of the tracer.
+   * @param {boolean} [traceOptions.enabled] - Enable tracing.
+   * @param {string} traceOptions.version - App version.
+   * @param {string} [traceOptions.jaegerHost] - Jaeger host.
+   * @param {string} [traceOptions.jaegerEndpoint] - Jaeger endpoint.
+   * @param {string} [traceOptions.zipkinUrl] - Zipkin url.
+   * @param {string} [traceOptions.collectorUrl] - collectorUrl url.
+   * @param {string} [traceOptions.logLevel] - Log level.
+   * @return {JambonzTracer} The RootSpan instance.
+   */
   constructor(traceOptions) {
     this._traceOptions = traceOptions;
     this._tracer = this.buildTracer();
@@ -88,14 +102,26 @@ class JambonzTracer {
     return trace.getTracer(name);
   }
 
+  /**
+   * tracer.
+   * @type {TracerAPI} opentelemetry TracerAPI
+   */
   get tracer() {
     return this._tracer;
   }
 
+  /**
+   * name of tracer.
+   * @type {string}
+   */
   get name() {
     return this._traceOptions.serviceName;
   }
 
+  /**
+   * enabled.
+   * @type {boolean}
+   */
   get enabled() {
     return this._traceOptions.enabled;
   }
