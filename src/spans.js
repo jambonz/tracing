@@ -125,6 +125,16 @@ class ChildSpan {
     }
   }
 
+  getSIPTracingPropagationHeaders() {
+    if (this._span && this.traceId !== '00000000000000000000000000000000') {
+      return {
+        'X-Trace-ID': this.traceId,
+        'X-Span-ID': this.spanId,
+      };
+    }
+    return {};
+  }
+
   setAttributes(attributes) {
     this.logger.debug({attributes}, `setting attributes for span: ${this.name}`);
     this._span.setAttributes(attributes);
